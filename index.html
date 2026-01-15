@@ -137,6 +137,22 @@
       .hero h1 { font-size: 2.2rem; }
       .hero p { font-size: 1rem; }
     }
+
+    .vote-box {
+      background: rgba(255,255,255,0.06);
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 420px;
+      margin: auto;
+      box-shadow: 0 0 30px rgba(0,170,255,0.3);
+    }
+
+    .vote-count {
+      font-size: 3rem;
+      color: #00c6ff;
+      margin: 20px 0;
+    }
+
   </style></head>
   <body>
     <!-- CINEMATIC HERO -->
@@ -177,8 +193,60 @@
   </section>  <!-- JOIN -->  <section class="buttons">
     <a class="btn" href="https://youtube.com/@steeltroopsfanclubofficial" target="_blank">YouTube Fanclub</a>
     <a class="btn" href="https://t.me/doraemonsteeltroopsfanclub" target="_blank">Telegram Community</a>
-  </section>  <footer>
-    Fan-made website. All rights belong to the original creators.<br>
-    This site is created by fans, for fans.
-  </footer></body>
+  </section>
+
+<!-- VOTING -->
+<section>
+  <h2>🗳️ Global Vote for Steel Troops Part 2</h2>
+  <p>Every fan’s voice matters. Vote once and be part of history.</p>
+
+  <div class="vote-box">
+    <div class="vote-count" id="votes">0</div>
+    <button class="btn" onclick="vote()">VOTE NOW</button>
+    <p id="msg"></p>
+  </div>
+</section>
+    
+    <footer>
+      Fan-made website. All rights belong to the original creators.<br>
+      This site is created by fans, for fans.
+    </footer>
+
+<script>
+  // 🔴 REPLACE THESE WITH YOUR OWN FIREBASE DETAILS
+  const firebaseConfig = {
+    apiKey: "AIzaSyD0vVO4RlwFWMUFF2QQm8xZdOvSvcYPTCk",
+    authDomain: "kabyam-1cdec.firebaseapp.com",
+    projectId: "kabyam-1cdec",
+    storageBucket: "kabyam-1cdec.firebasestorage.app",
+    messagingSenderId: "399931257095",
+    appId: "1:399931257095:web:fbe928b25ae8c520ab95a2"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const voteRef = db.ref("steel_troops_votes");
+
+  // Live vote update
+  voteRef.on("value", (snapshot) => {
+    document.getElementById("votes").innerText = snapshot.val() || 0;
+  });
+
+  function vote() {
+    if (localStorage.getItem("voted")) {
+      document.getElementById("msg").innerText = "You have already voted.";
+      return;
+    }
+
+    voteRef.transaction((current) => {
+      return (current || 0) + 1;
+    });
+
+    localStorage.setItem("voted", "yes");
+    document.getElementById("msg").innerText =
+      "Thank you for supporting Steel Troops Part 2!";
+  }
+</script>
+    
+  </body>
 </html>
